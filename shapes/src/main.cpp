@@ -1,6 +1,8 @@
 #include <cinder/app/RendererGl.h>
 #include <cinder/gl/gl.h>
 
+#include "suBox2D.h"
+
 using namespace ci;
 using namespace ci::app;
 
@@ -19,18 +21,28 @@ public:
 	void update() override;
 	void draw() override;
 
-protected:
+private:
 	ci::Color mBackgroundColor;
+
+	// Box2D
+	b2::Sandbox mSandbox;	// wraps the b2World
+	b2::Scale mScale;		// scale for mapping between physics and screen coordinates
 };
 
 void CinderApp::setup()
 {
 	mBackgroundColor = Color(0, 1, 0);
+
+	// Add a boundary shape to the simulation.
+	// This shape's lifetime is managed by the sandbox.
+	// It will be destroyed if you create a new boundary rect.
+	mSandbox.createBoundaryRect(mScale.toPhysics(Rectf{ getWindowBounds() }));
+	mSandbox.setGravity(b2Vec2_zero);
 }
 
 void CinderApp::update()
 {
-	// update routines here
+	mSandbox.step();
 }
 
 void CinderApp::draw()
