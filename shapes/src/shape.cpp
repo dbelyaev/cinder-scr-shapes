@@ -19,11 +19,24 @@ Shape::Shape(b2::Sandbox* aSanbox, b2::Scale* aScale)
 {
 	mColor = Color(Rand::randFloat(1.f), Rand::randFloat(1.f), Rand::randFloat(1.f));
 
+	init();
+}
+
+Shape::~Shape()
+{
+}
+
+/* Init objects */
+void
+Shape::init()
+{
+	clear();
+
 	// init physical entities to simulate
 	for (int i = 0; i < NUM_SEGMENTS; ++i)
 	{
 		// generate random position (inside of window) and velocity (scaled to window' dimensions)
-		vec2 randPos = vec2(Rand::randFloat(RADIUS, getWindowWidth()), Rand::randFloat(RADIUS, getWindowHeight()));
+		vec2 randPos = vec2(Rand::randFloat(RADIUS, (float) getWindowWidth()), Rand::randFloat(RADIUS, (float) getWindowHeight()));
 		mPoints.emplace_back(mSandbox->createCircle(mScale->toPhysics(randPos), RADIUS));
 	}
 
@@ -36,8 +49,12 @@ Shape::Shape(b2::Sandbox* aSanbox, b2::Scale* aScale)
 	}
 }
 
-Shape::~Shape()
+/* Clear all objects */
+void
+Shape::clear()
 {
+	mPoints.clear();
+	mPositionsToDraw.clear();
 }
 
 void

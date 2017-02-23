@@ -20,7 +20,9 @@ public:
 	Shape(b2::Sandbox* aSanbox, b2::Scale* aScale);
 	~Shape();
 
-public:
+	void init();
+	void clear();
+
 	void update();
 	void draw();
 

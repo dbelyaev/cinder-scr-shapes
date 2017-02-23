@@ -27,6 +27,7 @@ public:
 	void setup() override;
 	void update() override;
 	void draw() override;
+	void resize() override;
 
 private:
 	ci::Color mBackgroundColor;
@@ -41,12 +42,13 @@ private:
 void
 CinderApp::setup()
 {
+	ci::app::getWindow()->setTitle("cinder-scr-shapes");
+
 	mBackgroundColor = Color(0, 0, 0);		// default background
 	Rand::randSeed((int32_t) time(NULL));	// feed randomizer with seed
 
-	// Add a boundary shape to the simulation.
-	// This shape's lifetime is managed by the sandbox.
-	// It will be destroyed if you create a new boundary rect.
+	// add boundary shape to simulation based on window' dimensions
+	// (lifetime is managed by sandbox, will be destroyed when new boundary created)
 	mSandbox.createBoundaryRect(mScale.toPhysics(Rectf{ getWindowBounds() }));
 	mSandbox.setGravity(b2Vec2_zero);
 
@@ -71,6 +73,17 @@ CinderApp::draw()
 
 	for (auto const& shape : mShapes)
 		shape->draw();
+}
+
+void
+CinderApp::resize()
+{
+	// update boundaries corresponding to new window' dimensions
+	mSandbox.createBoundaryRect(mScale.toPhysics(Rectf{ getWindowBounds() }));
+
+	// re-init shape object according to new sandbox boundaries
+	for (auto const& shape : mShapes)
+		shape->init();
 }
 
 #ifdef  _DEBUG
