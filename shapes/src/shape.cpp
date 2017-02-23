@@ -4,8 +4,14 @@
 #include <cinder/Rand.h>
 #include <cinder/gl/gl.h>
 
+
 using namespace ci;
 using namespace ci::app;
+
+const int NUM_SEGMENTS = 3;	// how many segments will every shape element use
+const int NUM_BACKLOG = 10;	// how many trailing shapes to draw
+const float RADIUS = 0.01f;	// pre-defined radius, smaller to avoid un-needed collisions between elements
+
 
 Shape::Shape(b2::Sandbox* aSanbox, b2::Scale* aScale)
 	: mSandbox(aSanbox)
@@ -13,53 +19,60 @@ Shape::Shape(b2::Sandbox* aSanbox, b2::Scale* aScale)
 {
 	mColor = Color(Rand::randFloat(1.f), Rand::randFloat(1.f), Rand::randFloat(1.f));
 
-	float radius = 0.01f;
-	mCircle1 = mSandbox->createCircle(mScale->toPhysics(vec2(Rand::randFloat(radius, getWindowWidth()), Rand::randFloat(radius, getWindowHeight()))), mScale->toPhysics(radius));
-	mCircle1->SetLinearDamping(0.f);
-	mCircle1->SetLinearVelocity(b2Vec2(Rand::randFloat(1.f, getWindowHeight() * 0.005f), Rand::randFloat(1.f, getWindowHeight() * 0.005f)));
+	// init physical entities to simulate
+	for (int i = 0; i < NUM_SEGMENTS; ++i)
+	{
+		// generate random position (inside of window) and velocity (scaled to window' dimensions)
+		vec2 randPos = vec2(Rand::randFloat(RADIUS, getWindowWidth()), Rand::randFloat(RADIUS, getWindowHeight()));
+		mPoints.emplace_back(mSandbox->createCircle(mScale->toPhysics(randPos), RADIUS));
+	}
 
-	mCircle2 = mSandbox->createCircle(mScale->toPhysics(vec2(Rand::randFloat(radius, getWindowWidth()), Rand::randFloat(radius, getWindowHeight()))), mScale->toPhysics(radius));
-	mCircle2->SetLinearDamping(0.f);
-	mCircle2->SetLinearVelocity(b2Vec2(Rand::randFloat(1.f, getWindowHeight() * 0.005f), Rand::randFloat(1.f, getWindowHeight() * 0.005f)));
-
-	mCircle3 = mSandbox->createCircle(mScale->toPhysics(vec2(Rand::randFloat(radius, getWindowWidth()), Rand::randFloat(radius, getWindowHeight()))), mScale->toPhysics(radius));
-	mCircle3->SetLinearDamping(0.f);
-	mCircle3->SetLinearVelocity(b2Vec2(Rand::randFloat(1.f, getWindowHeight() * 0.005f), Rand::randFloat(1.f, getWindowHeight() * 0.005f)));
+	// set initial velocity on objects
+	for (auto const& circle : mPoints)
+	{
+		b2Vec2 randVelocity = b2Vec2(Rand::randFloat(1.f, getWindowHeight() * 0.005f), Rand::randFloat(1.f, getWindowHeight() * 0.005f));
+		circle->SetLinearDamping(0.f);
+		circle->SetLinearVelocity(randVelocity);
+	}
 }
 
 Shape::~Shape()
 {
 }
 
-void Shape::update()
+void
+Shape::update()
 {
-	//counter++;
+	vector<vec2> positions;
+	for (auto const& point : mPoints)
+	{
+		vec2 pos = vec2(mScale->fromPhysics(point->GetPosition().x), mScale->fromPhysics(point->GetPosition().y));
+		positions.push_back(pos);
+	}
 
-	//if (counter == 2)
-	//{
-	array<vec2, 3> pos;
-	pos[0] = vec2(mScale->fromPhysics(mCircle1->GetPosition().x), mScale->fromPhysics(mCircle1->GetPosition().y));
-	pos[1] = vec2(mScale->fromPhysics(mCircle2->GetPosition().x), mScale->fromPhysics(mCircle2->GetPosition().y));
-	pos[2] = vec2(mScale->fromPhysics(mCircle3->GetPosition().x), mScale->fromPhysics(mCircle3->GetPosition().y));
-	mPoints.push_back(pos);
+	// put obtained positions for shape elements into vector
+	mPositionsToDraw.push_back(positions);
 
-	while (mPoints.size() > 10)
-		mPoints.erase(mPoints.begin());
-
-	//counter = 0;
-	//}
+	// remove older data (no more than 10 elements in backlog)
+	while (mPositionsToDraw.size() > NUM_BACKLOG)
+		mPositionsToDraw.erase(mPositionsToDraw.begin());
 }
 
-void Shape::draw()
+void
+Shape::draw()
 {
-	int counter = mPoints.size();
-	for (vector<array<vec2, 3>>::iterator it = mPoints.begin(); it != mPoints.end(); ++it)
+	int counter = mPositionsToDraw.size();
+	for (auto const& positions : mPositionsToDraw)
 	{
-		gl::color(ColorA(mColor, 1.f / (float)counter));
-		gl::drawLine(it->at(0), it->at(1));
-		gl::drawLine(it->at(1), it->at(2));
-		gl::drawLine(it->at(2), it->at(0));
+		for (int i = 0; i < positions.size() - 1; ++i)
+		{
+			gl::color(ColorA(mColor, 1.f / (float) counter));	// transparency, smoothly fading out
+			gl::drawLine(positions.at(i), positions.at(i + 1));
+		}
 
-		counter--;
+		// draw last segment between last and first points
+		gl::drawLine(positions.at(positions.size() - 1), positions.at(0));
+
+		counter--;	// decrease counter, which will make it less transparent (0.f fully transparent, 1.f - fully drawn)
 	}
 }

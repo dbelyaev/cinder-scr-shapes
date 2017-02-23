@@ -28,11 +28,8 @@ private:
 	b2::Sandbox* mSandbox;
 	b2::Scale* mScale;
 
-	b2::unique_body_ptr mCircle1;
-	b2::unique_body_ptr mCircle2;
-	b2::unique_body_ptr mCircle3;
-
-	vector<array<vec2, 3>> mPoints;
+	vector<b2::unique_body_ptr> mPoints;
+	vector<vector<vec2>> mPositionsToDraw;
 
 	Color mColor;
 };
