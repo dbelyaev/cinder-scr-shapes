@@ -165,6 +165,7 @@
     <ClInclude Include="..\..\blocks\suBox2D\src\sansumbrella\box2d\SimpleControl.h" />
     <ClInclude Include="..\..\blocks\suBox2D\src\sansumbrella\suBox2D.h" />
     <ClInclude Include="..\include\resources.h" />
+    <ClInclude Include="..\src\shape.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources.rc" />
@@ -222,6 +223,7 @@
     <ClCompile Include="..\..\blocks\suBox2D\src\sansumbrella\box2d\Scale.cpp" />
     <ClCompile Include="..\..\blocks\suBox2D\src\sansumbrella\box2d\SimpleControl.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\shape.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

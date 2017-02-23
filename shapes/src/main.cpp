@@ -1,13 +1,20 @@
 #include <cinder/app/RendererGl.h>
 #include <cinder/gl/gl.h>
+#include <cinder/Rand.h>
 
 #include "suBox2D.h"
+
+#include "shape.h"
+
 
 using namespace ci;
 using namespace ci::app;
 
-// in DEBUG mode run as normal app in a window
-// in release start as screen saver
+const int AMOUNT = 3;
+
+
+// in DEBUG mode run as normal app (Window)
+// in RELEASE start as screen saver (full screen, exits on clicks\movement etc)
 #ifdef  _DEBUG
 #include "cinder/app/App.h"
 class CinderApp : public App
@@ -27,27 +34,43 @@ private:
 	// Box2D
 	b2::Sandbox mSandbox;	// wraps the b2World
 	b2::Scale mScale;		// scale for mapping between physics and screen coordinates
+
+	std::vector<std::unique_ptr<Shape>> mShapes;	// contains Shape instances
 };
 
-void CinderApp::setup()
+void
+CinderApp::setup()
 {
-	mBackgroundColor = Color(0, 1, 0);
+	mBackgroundColor = Color(0, 0, 0);		// default background
+	Rand::randSeed((int32_t) time(NULL));	// feed randomizer with seed
 
 	// Add a boundary shape to the simulation.
 	// This shape's lifetime is managed by the sandbox.
 	// It will be destroyed if you create a new boundary rect.
 	mSandbox.createBoundaryRect(mScale.toPhysics(Rectf{ getWindowBounds() }));
 	mSandbox.setGravity(b2Vec2_zero);
+
+	// initialize shape objects
+	for (int i = 0; i < AMOUNT; i++)
+		mShapes.push_back(std::unique_ptr<Shape>(new Shape(&mSandbox, &mScale)));
 }
 
-void CinderApp::update()
+void
+CinderApp::update()
 {
-	mSandbox.step();
+	mSandbox.step();	// step in time
+
+	for (auto const& shape : mShapes)
+		shape->update();
 }
 
-void CinderApp::draw()
+void
+CinderApp::draw()
 {
 	gl::clear(mBackgroundColor);
+
+	for (auto const& shape : mShapes)
+		shape->draw();
 }
 
 #ifdef  _DEBUG

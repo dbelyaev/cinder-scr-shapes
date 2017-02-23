@@ -211,6 +211,9 @@
     <ClInclude Include="..\..\blocks\suBox2D\src\sansumbrella\suBox2D.h">
       <Filter>blocks\sansumbrella</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\shape.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -368,6 +371,9 @@
     </ClCompile>
     <ClCompile Include="..\..\blocks\suBox2D\src\sansumbrella\box2d\SimpleControl.cpp">
       <Filter>blocks\sansumbrella\box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\shape.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
