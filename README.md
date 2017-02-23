@@ -7,4 +7,4 @@ Simple Windows screensaver using Cinder framework with main purpose to re-create
 * download latest Cinder SDK (this project was tested with v0.9.0)
 * add environment variable named `CINDERDIR` that points to where your Cinder installation folder is (for example: `c:\sdk\cinder`) 
 * open solutions file at `.\shapes\vs2015\shapes.sln` and build it
-* in `DEBUG` configuration project will be compilead as App (normal Window), while in `RELEASE` it will generate Windows screensaver (exits on mouse events, fullscreen etc)
+* in `DEBUG` configuration project will be compiled as App (normal Window with controls), while in `RELEASE` it will generate Windows screensaver (exits on mouse events, fullscreen etc)
