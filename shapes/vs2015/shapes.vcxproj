@@ -71,8 +71,8 @@
       <AdditionalIncludeDirectories>$(CINDERDIR)\include;..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;OpenGL32.lib;%(AdditionalDependencies);scrnsavw.lib;comctl32.lib;libpng.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CINDERDIR)\lib\msw\$(PlatformTarget)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder.lib;OpenGL32.lib;%(AdditionalDependencies);scrnsavw.lib;comctl32.lib;libpng.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CINDERDIR)\lib\msw\$(PlatformTarget);$(CINDERDIR)\lib\msw\$(PlatformTarget)\$(Configuration)\$(PlatformToolset)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -98,8 +98,8 @@
       <AdditionalIncludeDirectories>$(CINDERDIR)\include;..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset).lib;OpenGL32.lib;%(AdditionalDependencies);scrnsavw.lib;comctl32.lib;libpng.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CINDERDIR)\lib\msw\$(PlatformTarget)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder.lib;OpenGL32.lib;%(AdditionalDependencies);scrnsavw.lib;comctl32.lib;libpng.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CINDERDIR)\lib\msw\$(PlatformTarget);$(CINDERDIR)\lib\msw\$(PlatformTarget)\$(Configuration)\$(PlatformToolset)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
